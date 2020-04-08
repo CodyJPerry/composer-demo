@@ -30,6 +30,9 @@ set('writable_mode', 'chmod');
 // Don't send stats
 set('allow_anonymous_stats', false);
 
+// Drush CLI
+set('drush', 'vendor/bin/drush');
+
 // Hosts
 // May need to adjust this 
 host('perrysdeve3.drupaltutor.dev')
@@ -39,6 +42,11 @@ host('perrysdeve3.drupaltutor.dev')
     
 
 // Tasks
+task('drush:maint_mode:enable', '{{drush}} sset system.maintenance_mode TRUE');
+task('drush:maint_mode:disable', '{{drush}} sset system.maintenance_mode FALSE');
+task('drush:cache_rebuild', '{{drush}} cr');
+task('drush:update_db', '{{drush}} updatedb -y');
+task('drush:config_import', '{{drush}} config:import -y');
 
 desc('Deploy your project');
 task('deploy', [
@@ -50,8 +58,13 @@ task('deploy', [
     'deploy:shared',
     'deploy:writable',
     'deploy:vendors',
+    'drush:maint_mode:enable',
+    'drush:update_db',
+    'drush:config_import',
     'deploy:clear_paths',
     'deploy:symlink',
+    'drush:maint_mode:disable',
+    'drush:cache_rebuild',
     'deploy:unlock',
     'cleanup',
     'success'
