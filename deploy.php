@@ -38,6 +38,7 @@ set('drush', 'vendor/bin/drush');
 host('perrysdeve3.drupaltutor.dev')
     ->user('dev')
     ->port(22154)
+    ->addSshOption('StrictHostKeyChecking', 'no')
     ->set('deploy_path', '~/{{application}}');    
     
 
